@@ -15,8 +15,8 @@ class Foo(Base):
     __tablename__ = "foo"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    parent_id = Column(UUID(as_uuid=True), ForeignKey(id))
+    parent_id = Column(UUID(as_uuid=True), ForeignKey("foo.id"))
     title = Column(String(256))
     registered_in = Column(DateTime, default=datetime.now)
 
-    parent = relationship("foo.id", lazy="joined")
+    parent = relationship("Foo", remote_side=[id])
