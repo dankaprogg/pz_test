@@ -3,7 +3,6 @@ from typing import List
 from sqlalchemy import literal
 from sqlalchemy import null
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import InstrumentedAttribute
 from sqlalchemy.orm import Query
 from sqlalchemy.orm import aliased
 
@@ -13,7 +12,7 @@ from db.models import Foo
 async def foo_recursive(
     session: AsyncSession,
     depth: int,
-    sort_fld: InstrumentedAttribute,
+    sort_fld: str,
     sort_dir: str,
     root_id: str = None,
 ) -> List[Foo]:
