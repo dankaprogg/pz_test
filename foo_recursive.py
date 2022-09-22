@@ -2,6 +2,7 @@ from typing import List
 
 from sqlalchemy import literal
 from sqlalchemy import null
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Query
 from sqlalchemy.orm import aliased
@@ -25,12 +26,10 @@ async def foo_recursive(
     :param root_id: optional, id of root element, if not presented, any element with parent_id=null will be used
     :return:
     """
-    if sort_dir == "asc":
-        sort_fld = sort_fld.asc()
-    elif sort_dir == "desc":
-        sort_fld = sort_fld.desc()
-    else:
+    if sort_dir not in ["ASC", "DESC"]:
         raise Exception("Wrong sort_dir")
+
+    sort_fld = text(f"c.{sort_fld} {sort_dir}")
     hierarchy = Query(Foo).add_columns(literal(0).label('level'))
 
     if root_id:
@@ -44,6 +43,7 @@ async def foo_recursive(
     children = aliased(Foo, name="c")
     hierarchy = hierarchy.union_all(
         Query(children).add_columns((parent.c.level + 1).label("level"))
+            .order_by(sort_fld)
             .filter(children.parent_id == parent.c.id)
             .filter(parent.c.level < depth)
     )
