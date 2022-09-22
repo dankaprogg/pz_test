@@ -12,14 +12,16 @@ async def foo_recursive(
     session: AsyncSession,
     depth: int,
     sort_fld: Column,
-    root_uuid: str = None,
+    root_id: str = None,
 ):
-    hierarchy = (
-        Query(Foo)
-            .add_columns(literal(0).label('level'))
-            .filter(Foo.parent_id == null())
-            .cte(name="hierarchy", recursive=True)
-    )
+    hierarchy = Query(Foo).add_columns(literal(0).label('level'))
+
+    if root_id:
+        hierarchy = hierarchy.filter(Foo.parent_id == root_id)
+    else:
+        hierarchy = hierarchy.filter(Foo.parent_id == null())
+
+    hierarchy = hierarchy.cte(name="hierarchy", recursive=True)
 
     parent = aliased(hierarchy, name="p")
     children = aliased(Foo, name="c")
