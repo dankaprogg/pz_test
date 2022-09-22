@@ -3,11 +3,17 @@ from sqlalchemy import null
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import Query
 from sqlalchemy.orm import aliased
+from sqlalchemy.sql.schema import Column
 
 from db.models import Foo
 
 
-async def foo_recursive(session: AsyncSession, depth: int):
+async def foo_recursive(
+    session: AsyncSession,
+    depth: int,
+    sort_fld: Column,
+    root_uuid: str = None,
+):
     hierarchy = (
         Query(Foo)
             .add_columns(literal(0).label('level'))
