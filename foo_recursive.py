@@ -21,8 +21,8 @@ async def foo_recursive(
 
     :param session: AsyncSession
     :param depth: int, depth of recursive select
-    :param sort_fld: sort field
-    :param sort_dir: sort direction, "asc" or "desc"
+    :param sort_fld: sort field name
+    :param sort_dir: sort direction, "ASC" or "DESC"
     :param root_id: optional, id of root element, if not presented, any element with parent_id=null will be used
     :return:
     """
