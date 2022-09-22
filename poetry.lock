@@ -170,6 +170,20 @@ tomli = ">=1.0.0"
 testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "pygments (>=2.7.2)", "requests", "xmlschema"]
 
 [[package]]
+name = "pytest-asyncio"
+version = "0.19.0"
+description = "Pytest support for asyncio"
+category = "dev"
+optional = false
+python-versions = ">=3.7"
+
+[package.dependencies]
+pytest = ">=6.1.0"
+
+[package.extras]
+testing = ["coverage (>=6.2)", "hypothesis (>=5.7.1)", "flaky (>=3.5.0)", "mypy (>=0.931)", "pytest-trio (>=0.7.0)"]
+
+[[package]]
 name = "python-dotenv"
 version = "0.21.0"
 description = "Read key-value pairs from a .env file and set them as environment variables"
@@ -231,7 +245,7 @@ python-versions = ">=3.7"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "e3703e925a0be9df99cb3c3b23dd450b96c23fd32b17cdff03602bb3e21bd248"
+content-hash = "4f449e23a46824cd5667997c1d27c145017da92694210f8758f95e94d591c740"
 
 [metadata.files]
 alembic = []
@@ -248,6 +262,7 @@ py = []
 pydantic = []
 pyparsing = []
 pytest = []
+pytest-asyncio = []
 python-dotenv = []
 sqlalchemy = []
 tomli = []
