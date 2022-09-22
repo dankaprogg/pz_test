@@ -48,10 +48,12 @@ async def foo_recursive(
             .filter(parent.c.level < depth)
     )
 
-    stmt = Query(
-        Foo,
-        hierarchy.c.level
-    ).select_entity_from(hierarchy)
+    stmt = Query(Foo).from_statement(
+        Query(
+            Foo,
+            hierarchy.c.level
+        ).select_entity_from(hierarchy)
+    )
 
     async with session as transaction:
         result = await transaction.execute(stmt)
