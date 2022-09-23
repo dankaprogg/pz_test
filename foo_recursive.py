@@ -4,8 +4,9 @@ from sqlalchemy import literal
 from sqlalchemy import null
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Query
+from sqlalchemy import select
 from sqlalchemy.orm import aliased
+from sqlalchemy.orm import Query
 
 from db.models import Foo
 
@@ -30,7 +31,7 @@ async def foo_recursive(
         raise Exception("Wrong sort_dir")
 
     sort_fld = text(f"c.{sort_fld} {sort_dir}")
-    hierarchy = Query(Foo).add_columns(literal(0).label('level'))
+    hierarchy = select(Foo).add_columns(literal(0).label('level'))
 
     if root_id:
         hierarchy = hierarchy.filter(Foo.parent_id == root_id)
@@ -42,13 +43,13 @@ async def foo_recursive(
     parent = aliased(hierarchy, name="p")
     children = aliased(Foo, name="c")
     hierarchy = hierarchy.union_all(
-        Query(children).add_columns((parent.c.level + 1).label("level"))
+        select(children).add_columns((parent.c.level + 1).label("level"))
             .order_by(sort_fld)
             .filter(children.parent_id == parent.c.id)
             .filter(parent.c.level < depth)
     )
 
-    stmt = Query(Foo).from_statement(
+    stmt = select(Foo).from_statement(
         Query(
             Foo,
             hierarchy.c.level
@@ -58,6 +59,6 @@ async def foo_recursive(
     async with session as transaction:
         result = await transaction.execute(stmt)
 
-    result = result.all()
+    result = [el._data[0] for el in result.all()]
 
     return result
